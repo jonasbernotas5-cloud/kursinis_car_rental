@@ -5,6 +5,7 @@ class Vehicle(ABC):
         self.license_plate = license_plate
         self._model = model
         self.daily_rate = daily_rate
+        self._is_available = True
 
     @property
     def license_plate(self):
@@ -99,3 +100,76 @@ class Truck(Vehicle):
     def get_info(self):
         return f"{super().get_info()}, Load Capacity: {self._load_capacity}"
     
+
+
+class Customer:
+    def __init__(self, name, customer_ID):
+        self.name = name
+        self.customer_ID = customer_ID
+        self._rented_vehicles = []
+
+    @property
+    def name(self):
+        return self._name
+        
+    @name.setter
+    def name(self, value):
+        if not value or value.strip() == "":
+            raise ValueError("Name cannot be empty.")
+        self._name = value
+
+    @property
+    def customer_ID(self):
+        return self._customer_ID
+        
+    @customer_ID.setter
+    def customer_ID(self, value):
+        if not(len(value) == 4 and value[0] == "C" and value[1:].isdigit()):
+            raise ValueError("the ID is incorrect")
+        self._customer_ID = value
+
+    def add_rented_vehicle(self, vehicle):
+        if not vehicle._is_available:
+            raise ValueError(f"Vehicle {vehicle.license_plate} is not available for rent.")
+        self._rented_vehicles.append(vehicle)
+
+    def return_rented_vehicle(self, license_plate):
+        vehicle = next((v for v in self._rented_vehicles if v.license_plate == license_plate), None)
+        if vehicle:
+            self._rented_vehicles.remove(vehicle)
+            vehicle._is_available = True
+            return f"Vehicle {license_plate} returned successfully."
+        else:
+            return f"Vehicle with license plate {license_plate} not found in rented vehicles."
+
+
+class RentalSystem:
+    def __init__(self):
+        self._fleet = []
+        self._customers = []
+
+    def add_vehicle(self, vehicle):
+        self._fleet.append(vehicle)
+
+    def add_customer(self, customer):
+        self._customers.append(customer)
+
+    def rent_vehicle(self, customer_ID, license_plate, days):
+        
+        customer = next((c for c in self._customers if c.customer_ID == customer_ID), None)
+        if not customer:
+            return f"Customer with ID {customer_ID} not found."
+
+        vehicle = next((v for v in self._fleet if v.license_plate == license_plate), None)
+        if not vehicle:
+            return f"Vehicle with license plate {license_plate} not found."
+    
+        if not vehicle._is_available:
+            return f"Vehicle {license_plate} is not available for rent."
+        
+        
+        total_price = vehicle.get_total_price(days)
+        customer.add_rented_vehicle(vehicle)
+        vehicle._is_available = False
+        return f"Vehicle {license_plate} rented to customer {customer_ID} for {days} days. Total price: ${total_price:.2f}"
+
