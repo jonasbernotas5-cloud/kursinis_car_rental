@@ -101,7 +101,6 @@ class Truck(Vehicle):
         return f"{super().get_info()}, Load Capacity: {self._load_capacity}"
     
 
-
 class Customer:
     def __init__(self, name, customer_ID):
         self.name = name
@@ -172,4 +171,17 @@ class RentalSystem:
         customer.add_rented_vehicle(vehicle)
         vehicle._is_available = False
         return f"Vehicle {license_plate} rented to customer {customer_ID} for {days} days. Total price: ${total_price:.2f}"
-
+    
+    
+class Factory:
+    @staticmethod
+    def create_vehicle(vehicle_type, license_plate, model, daily_rate, extra_attribute):
+        if vehicle_type == "Car":
+            return Car(license_plate, model, daily_rate, extra_attribute)
+        elif vehicle_type == "Motorcycle":
+            return Motorcycle(license_plate, model, daily_rate, extra_attribute)
+        elif vehicle_type == "Truck":
+            return Truck(license_plate, model, daily_rate, extra_attribute)
+        else:
+            raise ValueError("Invalid vehicle type.")
+        
