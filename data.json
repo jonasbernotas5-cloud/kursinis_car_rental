@@ -1,0 +1,29 @@
+{
+    "fleet": [
+        {
+            "type": "Car",
+            "license_plate": "LRS123",
+            "model": "Toyota Corolla",
+            "daily_rate": 30,
+            "is_available": false,
+            "extra_attribute": 5
+        },
+        {
+            "type": "Truck",
+            "license_plate": "TRK789",
+            "model": "Volvo FH16",
+            "daily_rate": 100,
+            "is_available": true,
+            "extra_attribute": 20000
+        }
+    ],
+    "customers": [
+        {
+            "name": "John Doe",
+            "customer_ID": "C001",
+            "rented_vehicles": [
+                "LRS123"
+            ]
+        }
+    ]
+}

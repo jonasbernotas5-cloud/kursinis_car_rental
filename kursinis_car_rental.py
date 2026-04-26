@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import json
 
 class Vehicle(ABC):
     def __init__(self, license_plate, model, daily_rate):
@@ -171,8 +172,66 @@ class RentalSystem:
         customer.add_rented_vehicle(vehicle)
         vehicle._is_available = False
         return f"Vehicle {license_plate} rented to customer {customer_ID} for {days} days. Total price: ${total_price:.2f}"
+
+    def save_data(self, filename = "data.json"):
+        data = {
+            "fleet": [],
+            "customers": []
+        }
+        for v in self._fleet:
+            v_data = {
+                "type": type(v).__name__,
+                "license_plate": v.license_plate,
+                "model": v._model,
+                "daily_rate": v.daily_rate,
+                "is_available": v._is_available
+            }
+            if isinstance(v, Car):
+                v_data["extra_attribute"] = v.seats
+            elif isinstance(v, Motorcycle):
+                v_data["extra_attribute"] = v.engine_capacity
+            elif isinstance(v, Truck):
+                v_data["extra_attribute"] = v.load_capacity
+
+            data["fleet"].append(v_data)
+
+        for c in self._customers:
+            c_data = {
+                "name": c.name,
+                "customer_ID": c.customer_ID,
+                "rented_vehicles": [v.license_plate for v in c._rented_vehicles]
+            }
+            data["customers"].append(c_data)
+
+        with open(filename, 'w') as f:
+            json.dump(data, f, indent=4)
+
+        return f"Data saved to {filename} successfully."
     
-    
+    def load_data(self, filename = "data.json"):
+        try:
+            with open(filename, 'r') as f:
+                data = json.load(f)
+
+            for v_data in data["fleet"]:
+                vehicle = Factory.create_vehicle(v_data["type"], v_data["license_plate"], v_data["model"], v_data["daily_rate"], v_data["extra_attribute"])
+                vehicle._is_available = v_data["is_available"]
+                self.add_vehicle(vehicle)
+
+            for c_data in data["customers"]:
+                customer = Customer(c_data["name"], c_data["customer_ID"])
+                for license_plate in c_data["rented_vehicles"]:
+                    vehicle = next((v for v in self._fleet if v.license_plate == license_plate), None)
+                    if vehicle:
+                        customer._rented_vehicles.append(vehicle)
+                        vehicle._is_available = False
+                self.add_customer(customer)
+
+            return f"Data loaded from {filename} successfully."
+
+        except FileNotFoundError:
+            return f"File {filename} not found."
+
 class Factory:
     @staticmethod
     def create_vehicle(vehicle_type, license_plate, model, daily_rate, extra_attribute):
@@ -185,3 +244,40 @@ class Factory:
         else:
             raise ValueError("Invalid vehicle type.")
         
+# Example usage
+
+if __name__ == "__main__":
+    system = RentalSystem()
+
+    try:
+        car1 = Factory.create_vehicle("Car", "LRS123", "Toyota Corolla", 30, 5)
+        truck1 = Factory.create_vehicle("Truck", "TRK789", "Volvo FH16", 100, 20000)
+        
+        system.add_vehicle(car1)
+        system.add_vehicle(truck1)
+        
+        customer1 = Customer("John Doe", "C001")
+        system.add_customer(customer1)
+        
+    except Exception as e:
+        print(f"Error during object creation: {e}")
+
+    rental_result = system.rent_vehicle("C001", "LRS123", 3)
+    print(f"Rental status: {rental_result}")
+
+    save_status = system.save_data("data.json")
+    print(save_status)
+
+    new_system = RentalSystem()
+    
+    load_status = new_system.load_data("data.json")
+    print(load_status)
+
+    if len(new_system._fleet) > 0:
+        v = new_system._fleet[0]
+        status = "Occupied" if not v._is_available else "Available"
+        print(f"Restored Vehicle: {v._model} ({v.license_plate}), Status: {status}")
+    
+    for c in new_system._customers:
+        rented_plates = [v.license_plate for v in c._rented_vehicles]
+        print(f"Restored Customer: {c.name}, Rented Vehicles: {rented_plates}")
