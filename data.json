@@ -13,8 +13,24 @@
             "license_plate": "TRK789",
             "model": "Volvo FH16",
             "daily_rate": 100,
-            "is_available": true,
+            "is_available": false,
             "extra_attribute": 20000
+        },
+        {
+            "type": "Motorcycle",
+            "license_plate": "MTR456",
+            "model": "Yamaha MT-07",
+            "daily_rate": 20,
+            "is_available": false,
+            "extra_attribute": 689
+        },
+        {
+            "type": "Car",
+            "license_plate": "LRS124",
+            "model": "Honda Civic",
+            "daily_rate": 28,
+            "is_available": true,
+            "extra_attribute": 5
         }
     ],
     "customers": [
@@ -23,6 +39,20 @@
             "customer_ID": "C001",
             "rented_vehicles": [
                 "LRS123"
+            ]
+        },
+        {
+            "name": "Jane Smith",
+            "customer_ID": "C002",
+            "rented_vehicles": [
+                "TRK789"
+            ]
+        },
+        {
+            "name": "David Johnson",
+            "customer_ID": "C003",
+            "rented_vehicles": [
+                "MTR456"
             ]
         }
     ]

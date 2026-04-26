@@ -252,17 +252,30 @@ if __name__ == "__main__":
     try:
         car1 = Factory.create_vehicle("Car", "LRS123", "Toyota Corolla", 30, 5)
         truck1 = Factory.create_vehicle("Truck", "TRK789", "Volvo FH16", 100, 20000)
+        motorcycle1 = Factory.create_vehicle("Motorcycle", "MTR456", "Yamaha MT-07", 20, 689)
+        car2 = Factory.create_vehicle("Car", "LRS124", "Honda Civic", 28, 5)  
         
         system.add_vehicle(car1)
         system.add_vehicle(truck1)
-        
+        system.add_vehicle(motorcycle1)
+        system.add_vehicle(car2)
+
+
         customer1 = Customer("John Doe", "C001")
+        customer2 = Customer("Jane Smith", "C002")
+        customer3 = Customer("David Johnson", "C003")  # This will raise an error due to invalid ID format
+
         system.add_customer(customer1)
-        
+        system.add_customer(customer2)
+        system.add_customer(customer3)
+
     except Exception as e:
         print(f"Error during object creation: {e}")
 
-    rental_result = system.rent_vehicle("C001", "LRS123", 3)
+    rental_result = [system.rent_vehicle("C001", "LRS123", 3)]
+    rental_result.append(system.rent_vehicle("C002", "TRK789", 5))
+    rental_result.append(system.rent_vehicle("C003", "MTR456", 2))
+    
     print(f"Rental status: {rental_result}")
 
     save_status = system.save_data("data.json")
@@ -275,8 +288,13 @@ if __name__ == "__main__":
 
     if len(new_system._fleet) > 0:
         v = new_system._fleet[0]
-        status = "Occupied" if not v._is_available else "Available"
-        print(f"Restored Vehicle: {v._model} ({v.license_plate}), Status: {status}")
+    for v in new_system._fleet:
+        if v._is_available == False:
+            display_status = "Rented"
+        else:
+            display_status = "Available"
+
+        print(f"Restored Vehicle: {v._model} ({v.license_plate}), Status: {display_status}")
     
     for c in new_system._customers:
         rented_plates = [v.license_plate for v in c._rented_vehicles]
