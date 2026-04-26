@@ -41,3 +41,40 @@
 3. Paleiskite pagrindinę programą:
    ```bash
    python kursinis_car_rental.py
+
+##  Testavimas 
+
+Sistemos stabilumui užtikrinti buvo paruoštas platus Unit testų rinkinys naudojant standartinę Python `unittest` biblioteką. Iš viso realizuota 21 testas, apimančių visas kritines sistemos dalis.
+
+### Patikros sritys:
+* **Duomenų validacija**: Tikrinama, ar sistema tinkamai reaguoja į neteisingus valstybinius numerius, neigiamas kainas bei klaidingus klientų ID formatus.
+* **Kainų skaičiavimo polimorfizmas**: Testuojama, ar kiekviena transporto priemonės klasė (`Car`, `Truck`, `Motorcycle`) teisingai apskaičiuoja galutinę nuomos kainą pagal savo unikalią formulę.
+* **Nuomos logika**: Tikrinama, ar automobilis tampa „užimtas“ po nuomos, ar neleidžiama nuomotis jau užimtos transporto priemonės ir ar klientas sėkmingai mato savo nuomų sąrašą.
+* **Duomenų išsaugojimas (JSON)**: Testuojama, ar duomenys teisingai įrašomi į failą ir ar po užkrovimo visos objektų savybės bei būsenos išlieka nepakitusios.
+
+### Testų paleidimas:
+Paleidus `test_kursinis_car_rental.py` gauname tokį vaizdą:<img width="387" height="101" alt="image" src="https://github.com/user-attachments/assets/7f83f5b0-5378-4ac4-8529-73262df55050" />
+
+
+
+## Rezultatai 
+
+* **Sėkmingas testavimas**: Visi 21 parengtų unit testų sėkmingai praėjo patikrą, patvirtindami, kad transporto priemonių nuomos, kainų skaičiavimo ir duomenų validacijos logika veikia be klaidų.
+* **Duomenų išsaugojimas**: Įgyvendintas pilnas duomenų serializavimas į JSON formatą, užtikrinantis, kad visa sistemos būsena (automobilių užimtumas ir klientų nuomos) išlieka po programos perkrovimo.
+* **Iššūkis – duomenų vientisumas**: Didžiausias iššūkis buvo užtikrinti teisingą ryšių atstatymą tarp klientų ir transporto priemonių kraunant duomenis iš failo, tačiau tai buvo sėkmingai išspręsta susiejant objektus pagal unikalius numerius.
+* **Validacijos stabilumas**: Panaudojus Python `@property` dekoratorius, sukurta patikima apsauga nuo neteisingų duomenų įvedimo, kuri automatiškai sustabdo programą ir pateikia informatyvius klaidų pranešimus.
+* **Kodo lankstumas**: Panaudotas Factory projektavimo šablonas leido lengvai integruoti naujus transporto priemonių tipus (motociklus ir sunkvežimius) nekeičiant pagrindinės sistemos logikos.
+
+##  Išvados
+
+Šio kursinio darbo metu buvo sėkmingai sukurta funkcionuojanti transporto priemonių nuomos sistema, atitinkanti visus objektinio programavimo (OOP) reikalavimus.
+
+### Pagrindiniai pasiekimai:
+* **Tikslų įgyvendinimas**: Sukurta lanksti architektūra, leidžianti valdyti skirtingų tipų transporto priemones (automobilius, sunkvežimius, motociklus) bei automatizuoti nuomos kainų skaičiavimą naudojant polimorfizmą.
+* **Darbo rezultatas**: Parengta stabili programa su integruota duomenų saugykla (JSON formatu) ir išsamiu 15+ Unit testų rinkiniu, užtikrinančiu kodo patikimumą.
+* **OOP principų taikymas**: Praktiškai pritaikyti abstrakcijos, paveldėjimo ir enkapsuliacijos principai bei „Factory“ projektavimo šablonas, kas padidino kodo skaitomumą ir plečiamumą.
+
+### Ateities perspektyvos:
+* **Vartotojo sąsaja**: Programą būtų galima papildyti grafine sąsaja (GUI) arba žiniatinklio (Web) sąsaja, kad sistema būtų patogesnė galutiniam vartotojui.
+* **Duomenų bazės integracija**: Ateityje JSON failus būtų tikslinga pakeisti SQL duomenų baze (pvz., SQLite ar PostgreSQL) didesniam duomenų kiekiui valdyti.
+* **Papildoma logika**: Galima įdiegti nuolaidų sistemas lojaliems klientams bei transporto priemonių techninės priežiūros (serviso) sekimo modulį.
